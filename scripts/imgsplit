@@ -1,0 +1,26 @@
+#! /bin/bash
+
+for file in *jpg *jpeg *png;
+do
+	extension="${file##*.}"
+	filename="${file%.*}"
+
+	if [ "${filename:0:1}" = "*" ] ; then
+		continue
+	fi
+
+	identify $file > tmp
+
+	xvar=$(pcregrep -o1 ' (\d{3,4})x(\d{3,4}) ' ./tmp)
+	yvar=$(pcregrep -o2 ' (\d{3,4})x(\d{3,4}) ' ./tmp)
+	newxvar=$((xvar / 2))
+	newres="$newxvar""x""$yvar"
+	splitfile="$filename""part%d"".""$extension"
+
+	mkdir $filename
+	mv $file ./$filename/$file
+
+	convert -crop $newres ./$filename/$file +repage ./$filename/$splitfile
+
+	rm ./tmp
+done
