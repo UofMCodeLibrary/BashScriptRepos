@@ -1,3 +1,5 @@
+// Simple Hello world demonstration using std::cout and iostream.
+
 #include <iostream>
 
 int main() {
